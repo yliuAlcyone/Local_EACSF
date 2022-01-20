@@ -46,6 +46,8 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       #-DCOMPILE_SLICER4COMMANDLINE:BOOL=OFF
       -DCMAKE_INSTALL_PREFIX:PATH=${EXTERNAL_BINARY_DIRECTORY}/${proj}-install
       -DINSTALL_RUNTIME_DESTINATION=bin
+      -DShapePopulationViewer_QT_VERSION:STRING=5
+      -DQt5_DIR:BOOL=${Qt5_DIR}
       ${${proj}_CMAKE_OPTIONS}   
     INSTALL_COMMAND ""
     )
