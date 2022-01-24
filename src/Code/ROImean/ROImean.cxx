@@ -17,6 +17,11 @@ int  main(int argc, char** argv)
 {
     PARSE_ARGS;
 
+    if (AtlasSurfaceLabeling == "" || InputMeasurement == "") 
+      {
+	std::cerr << "input files need to be specified." << std::endl;
+	return EXIT_FAILURE;
+    }
 
     // lists to stock the CSF measurement and atlas values
     std::vector<std::string> atlas_array;
@@ -46,19 +51,27 @@ int  main(int argc, char** argv)
         }
     }
 
-     /// ROI
+    /// ROI are currently sorted as strings
     std::vector<std::string> roi = atlas_array;
     auto last = std::unique(roi.begin(), roi.end());
     roi.erase(last, roi.end());
     std::sort(roi.begin(), roi.end()); 
     last = std::unique(roi.begin(), roi.end());
     roi.erase(last, roi.end());
-
-    // initialization
+   
     int roinum = roi.size();
-    //int subjnum = 1;
-    
 
+    std::vector<int> roiInt;
+    // Add additional sort as integer numbers
+    if (NumberLabels) 
+    {
+      for(int j=0; j < roinum ; j++)
+        {
+	  roiInt.push_back( stoi(roi[j]) ); 
+        }
+      std::sort(roiInt.begin(), roiInt.end()); 
+    }
+    
     double ROI_Mean[roinum] ;
     double ROI_Sum[roinum] ;
     int roisize[roinum];
@@ -66,10 +79,10 @@ int  main(int argc, char** argv)
 
     // calculate number of times ROI labels appears in atlas to calculate size of ROI
   
-    for( int i=0; i < roinum ; i++ )
+    for(int i=0; i < roinum ; i++ )
     {
         int Roi_Number = 0;
-        for(int j=0; j < atlas_array.size() ; j++)
+        for(unsigned int j=0; j < atlas_array.size() ; j++)
         {
             if(atlas_array[j] == roi[i])
             {
@@ -81,7 +94,7 @@ int  main(int argc, char** argv)
 
     // For each value of CSF measurement array return the index of roi that correspond to that region in atlas
    
-    for( int i=0; i < measurement_array.size() ; i++ )
+    for(unsigned  int i=0; i < measurement_array.size() ; i++ )
     {
         for(int j=0; j < roinum ; j++)
         {
@@ -93,40 +106,94 @@ int  main(int argc, char** argv)
     }
 
 	// compute the regional value of csf for each region 
-    for (int j=0; j < measurement_array.size() ; j++)
+    for (unsigned int j=0; j < measurement_array.size() ; j++)
     {
         ROI_Mean[indx[j]] = 0;
         ROI_Sum[indx[j]] = 0;
     }
-    for( int j=0; j < measurement_array.size() ; j++ )
+    for(unsigned  int j=0; j < measurement_array.size() ; j++ )
     {
         ROI_Mean[indx[j]] = ROI_Mean[indx[j]] + (std::atof(measurement_array[j].c_str())/roisize[indx[j]]); 
         ROI_Sum[indx[j]] = ROI_Sum[indx[j]] + std::atof(measurement_array[j].c_str());     
     }
+
+    // summary files
+
+    if (MeanOnIndex != "")
+    {
+      ofstream Result;
+      Result.open (MeanOnIndex.c_str());
+      Result << "Index,RegionID,RegionMean" << endl;
+      for(int j=0; j < roinum ; j++)
+        {
+	  if (NumberLabels) 
+	  {
+	    for(int i=0; i < roinum ; i++)
+	    {
+	      if(roiInt[j] == stoi(roi[i])) 
+	      {    
+                Result << j << "," << roi[i] << "," << ROI_Mean[i] << endl;
+	      }
+	    }
+	  } else {
+	    Result << j << "," << roi[j] << "," << ROI_Mean[j] << endl; 
+	  }
+	}
+      Result.close();
+    }
+
+    if (SumOnIndex != "")
+    {
+      ofstream Result;
+      Result.open (SumOnIndex.c_str());
+      Result << "Index,RegionID,RegionSum" << endl;
+      for(int j=0; j < roinum ; j++)
+        {
+	  if (NumberLabels) 
+	  {
+	    for(int i=0; i < roinum ; i++)
+	    {
+	      if(roiInt[j] == stoi(roi[i])) 
+	      {    
+                Result << j << "," << roi[i] << "," << ROI_Sum[i] << endl;
+	      }
+	    }
+	  } else {
+	    Result << j << "," << roi[j] << "," << ROI_Sum[j] <<endl; 
+	  }
+        }
+      Result.close();
+    }
+
     // put the regional values in the output file
 
-    ofstream Result;
-    Result.open (OutputFileName1.c_str());
-    Result << "NUMBER_OF_POINTS=" << measurement_array.size() << endl; 
-    Result << "DIMENSION=1" << endl;
-    Result << "TYPE=Scalar" << endl;
-    for (int j=0; j < measurement_array.size() ; j++)
+    if (MeanOnSurfaceTxt != "")
     {
-        Result << ROI_Mean[indx[j]] << endl;      
+      ofstream Result;
+      Result.open (MeanOnSurfaceTxt.c_str());
+      Result << "NUMBER_OF_POINTS=" << measurement_array.size() << endl; 
+      Result << "DIMENSION=1" << endl;
+      Result << "TYPE=Scalar" << endl;
+      for (unsigned int j=0; j < measurement_array.size() ; j++)
+	{
+	  Result << ROI_Mean[indx[j]] << endl;      
+	}
+      Result.close();
     }
-    Result.close();
 
-
-    ofstream Result2;
-    Result2.open (OutputFileName2.c_str());
-    Result2 << "NUMBER_OF_POINTS=" << measurement_array.size() << endl; 
-    Result2 << "DIMENSION=1" << endl;
-    Result2 << "TYPE=Scalar" << endl;
-    for (int j=0; j < measurement_array.size() ; j++)
+    if (SumOnSurfaceTxt != "")
     {
-        Result2 << ROI_Sum[indx[j]] << endl;      
+      ofstream Result;
+      Result.open (SumOnSurfaceTxt.c_str());
+      Result << "NUMBER_OF_POINTS=" << measurement_array.size() << endl; 
+      Result << "DIMENSION=1" << endl;
+      Result << "TYPE=Scalar" << endl;
+      for (unsigned int j=0; j < measurement_array.size() ; j++)
+	{
+	  Result << ROI_Sum[indx[j]] << endl;      
+	}
+      Result.close();
     }
-    Result2.close();
 
     return EXIT_SUCCESS;    
 }

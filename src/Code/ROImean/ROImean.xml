@@ -1,33 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <executable>
-  <category></category>
+  <category>Feature Analysis</category>
   <title>ROImean</title>
   <description> Compute the EACSF sum and mean by region</description>
-  <version>0.1.5</version>
-   <parameters>
+  <version>1.0</version>
+  <license>
+     3D Slicer License.
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  
+  </license>
+  <contributor>Martin Styner, Tahya Deddah</contributor>
+  <parameters>
+
+                <label>I/O parameters</label>
 	   	<file>
 	   		<name>InputMeasurement</name>
 	   		<longflag>InputMeasurement</longflag>
 	   		<flag>I</flag>
-	   		<description> A txt file with the values of EA-CSF desnity at each vertex </description>
+	   		<description> A txt file with the values of EA-CSF desnity at each vertex (no header, NOT in KWM format) </description>
+			<channel>input</channel>
 	   	</file>
 		<file>
 			<name>AtlasSurfaceLabeling</name>
 			<longflag>AtlasSurfaceLabeling</longflag>
 			<flag>A</flag>
-			<description>a labeling txt ( for example: atlas destrieux) which divides the brain to many regions </description>
+			<description>a labeling txt ( for example: atlas destrieux) which divides the brain to many regions (no header, NOT in KWM format)</description>
+			<channel>input</channel>
 		</file>
 		<file> 
-			<name>OutputFileName1</name>
-			<longflag>OutputFileName1</longflag>
+			<name>MeanOnSurfaceTxt</name>
+			<longflag>MeanOnSurfaceTxt</longflag>
 			<flag>M</flag>
 			<description>A txt file with the values of regional mean of EACSF </description>
+			<channel>output</channel>
 		</file>
 		<file>
-			<name>OutputFileName2</name>
-			<longflag>OutputFileName2</longflag>
+			<name>MeanOnIndex</name>
+			<longflag>MeanOnIndex</longflag>
+			<flag>m</flag>
+			<description>A CSV file with the regional mean per region index</description>
+			<channel>output</channel>
+		</file>
+		<file>
+			<name>SumOnSurfaceTxt</name>
+			<longflag>SumOnSurfaceTxt</longflag>
 			<flag>S</flag>
 			<description>A txt file with the values of regional sum of EACSF</description>
+			<channel>output</channel>
 		</file>
+		<file>
+			<name>SumOnIndex</name>
+			<longflag>SumOnIndex</longflag>
+			<flag>s</flag>
+			<description>A CSV file with the regional sum per region index</description>
+			<channel>output</channel>
+		</file>
+		<boolean>
+		  <name>NumberLabels</name>
+		  <flag>n</flag>
+		  <longflag>NumberLabels</longflag>
+		  <label>NumberLabels</label>
+		  <description>interpret regional labels as integer numbers (by default they are treated as strings).</description>
+		  <default>0</default>
+		</boolean>
 	</parameters>
 </executable>
