@@ -23,8 +23,18 @@
 #include <map>
 #include <set>
 #include <vector>
+
+#ifdef __APPLE__
+
+#include <unordered_map>
+#include <unordered_set>
+
+#else
+
 #include <tr1/unordered_map>
 #include <tr1/unordered_set>
+
+#endif
 
 #include <cstddef>
 #include <math.h>
@@ -109,9 +119,14 @@ class SurfaceTopology {
 public:
 	vtkPolyData* dataSet;
 	const size_t nPoints;
-	std::tr1::unordered_map<vtkIdType, LocalSurfaceTopology> topologyMap;
-	std::tr1::unordered_map<vtkIdType, std::vector<vtkIdType> > neighborIds;
 	
+#if __APPLE__
+	std::unordered_map<vtkIdType, LocalSurfaceTopology> topologyMap;
+	std::unordered_map<vtkIdType, std::vector<vtkIdType> > neighborIds;
+#else
+	std::tr1::unordered_map<vtkIdType, LocalSurfaceTopology> topologyMap;
+        std::tr1::unordered_map<vtkIdType, std::vector<vtkIdType> > neighborIds;
+#endif
 	SurfaceTopology(vtkPolyData* ds): dataSet(ds), nPoints(ds->GetNumberOfPoints()) {
 		buildTopology();
 	}

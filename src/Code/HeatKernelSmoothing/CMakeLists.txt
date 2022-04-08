@@ -10,7 +10,11 @@ set_property(SOURCE HeatKernelSmoothingCLP.h PROPERTY SKIP_AUTOMOC ON)
 find_package(SlicerExecutionModel)
 include(${SlicerExecutionModel_USE_FILE})
 
-find_package(Qt5 COMPONENTS X11Extras REQUIRED)
+if (UNIX AND NOT APPLE)
+	find_package(Qt5 COMPONENTS X11Extras REQUIRED)
+else()
+	find_package(Qt5 COMPONENTS Widgets Gui Core REQUIRED)
+endif()
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})

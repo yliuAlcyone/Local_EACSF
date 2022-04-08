@@ -9,8 +9,11 @@ INCLUDE(${VTK_USE_FILE})
 FIND_PACKAGE(VXL REQUIRED)
 INCLUDE(${VXL_CMAKE_DIR}/UseVXL.cmake)
 
-find_package(Qt5 COMPONENTS X11Extras REQUIRED)
-
+if(UNIX AND NOT APPLE)
+	find_package(Qt5 COMPONENTS X11Extras REQUIRED)
+else()
+	find_package(Qt5 COMPONENTS Core Widgets Gui REQUIRED)
+endif()
 #INCLUDE_DIRECTORIES(/opt/local/include/vxl/core /opt/local/include/vxl/vcl)
 #LINK_DIRECTORIES(/opt/local/lib/vxl)
 

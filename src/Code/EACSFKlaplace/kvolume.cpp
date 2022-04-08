@@ -56,7 +56,10 @@
 
 using namespace pi;
 using namespace std;
+
+#ifdef __linux__
 using namespace std::tr1;
+#endif
 
 static vtkIO vio;
 

@@ -200,7 +200,7 @@ macro(check_compiler_platform_flags)
 
      # -fopenmp breaks compiling the HDF5 library in shared library mode
      # on the OS X platform -- at least with gcc 4.2 from Xcode.
-     set(compile_flag_lists CMAKE_C_FLAGS CMAKE_CXX_FLAGS
+     set(compile_flag_lists 
        CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_MINSIZEREL
        CMAKE_C_FLAGS_RELEASE CMAKE_C_FLAGS_RELWITHDEBINFO
        CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_MINSIZEREL
@@ -258,7 +258,7 @@ macro(check_compiler_platform_flags)
   # It must be removed or data errors will be produced and incorrect results
   # will be produced.  This is first documented in the gcc4 man page.
   if(CMAKE_COMPILER_IS_GNUCXX)
-    set(ALL_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS} ${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${CMAKE_MODULE_LINKER_FLAGS}" )
+    set(ALL_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${CMAKE_MODULE_LINKER_FLAGS}" )
     separate_arguments(ALL_FLAGS)
     foreach(COMP_OPTION ${ALL_FLAGS})
       if("${COMP_OPTION}" STREQUAL "-frename-registers")
@@ -286,8 +286,8 @@ check_compiler_warning_flags(C_WARNING_FLAGS CXX_WARNING_FLAGS)
 # Append ITK warnings to the CMake flags.
 # We do not set them in ITK_REQUIRED FLAGS because all project which
 # use ITK don't require these flags .
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_WARNING_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}")
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_WARNING_FLAGS}")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_WARNING_FLAGS}")
 
 #-----------------------------------------------------------------------------
 #Check the set of platform flags the compiler supports

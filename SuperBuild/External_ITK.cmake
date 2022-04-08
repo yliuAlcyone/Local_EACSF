@@ -55,7 +55,7 @@ if(NOT ( DEFINED "USE_SYSTEM_${extProjName}" AND "${USE_SYSTEM_${extProjName}}" 
       -DITK_WRAP_PYTHON:BOOL=OFF
       -DModule_ITKReview:BOOL=ON
       -DModule_ITKVtkGlue:BOOL=ON
-      -DModule_ITKIODCMTK:BOOL=ON
+      -DModule_ITKIODCMTK:BOOL=OFF
       -DModule_MGHIO:BOOL=ON
       -DModule_Thickness3D:BOOL=ON 
       -DITK_BUILD_DEFAULT_MODULES:BOOL=ON
